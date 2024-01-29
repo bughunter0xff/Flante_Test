@@ -1,0 +1,147 @@
+{{ define "main" }}
+
+{{ partial "page-header.html" . }}
+<style>
+.email-alert-popup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.email-alert-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+.email-alert-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 25px;
+  cursor: pointer;
+}
+.email-alert-close-btn {
+    background-color: #ffaa58; 
+    color: #ffffff;
+    border-radius: 30px; 
+    border: none;
+    outline: none;
+    padding: 12px 30px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+.email-alert-close-btn:hover {
+  transform: scale(1.10);
+}
+</style>
+<section class="section bg-white">
+  <div class="container section shadow rounded-lg px-4"> 
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 mb-4 mb-lg-0">
+        <form id="contactForm" action="https://formspree.io/f/xzbnzjrg" method="POST">
+          <input type="text" class="form-control mb-3" id="name" name="name" required placeholder="{{ i18n `yourname` }}">
+          <input type="email" class="form-control mb-3" id="email" name="email" required placeholder="{{ i18n `youremail` }}">
+          <input type="text" class="form-control mb-3" id="subject" name="subject" placeholder="{{ i18n `subject` }}">
+          <textarea name="message" id="message" class="form-control mb-3" required placeholder="{{ i18n `yourmessage` }}"></textarea>
+          <button type="submit" value="send" class="btn btn-primary">{{ i18n `sendnow` }}</button>
+        </form>
+        <div id="emailAlertPopup" class="email-alert-popup" style="display:none;">
+          <div class="email-alert-content">
+            <p id="emailAlertMessage"></p>
+            <button onclick="closeEmailAlertPopup()" class="email-alert-close-btn">Close</button>
+          </div>
+        </div>
+        <div id="thankYouPopup" class="email-alert-popup" style="display:none;">
+          <div class="email-alert-content">
+            <p>Thank you for your message. We will get back to you soon.</p>
+            <button onclick="closeThankYouPopup()" class="email-alert-close-btn">Close</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-5 content">
+        {{ .Content }}
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Perform email validation
+    if (!validateEmail()) {
+        return; // Stop the form submission if validation fails
+    }
+
+    // AJAX form submission
+    var form = this;
+    var data = new FormData(form);
+
+    fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            // Show thank-you popup on successful submission
+            document.getElementById('thankYouPopup').style.display = 'flex';
+
+            form.reset();
+        } else {
+            // Handle form submission errors
+            alert('There was an error submitting the form.');
+        }
+    }).catch(error => {
+        // Handle network errors
+        alert('There was a network error.');
+    });
+});
+function validateEmail() {
+  var email = document.getElementById('email').value;
+  var validPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var restrictions = [
+      { pattern: /--/},
+      { pattern: /-/},
+      { pattern: /\.\./},
+      { pattern: /^[0-9]+@/},
+    ];
+
+  if (!validPattern.test(email)) {
+        showEmailAlertPopup("Please enter a valid email address.");
+        return false;
+    }
+
+    for (var i = 0; i < restrictions.length; i++) {
+        if (restrictions[i].pattern.test(email)) {
+            showEmailAlertPopup("Please enter a valid email address.");
+            return false;
+        }
+    }
+
+    return true;
+}
+function showEmailAlertPopup(message) {
+    document.getElementById('emailAlertMessage').innerText = message;
+    document.getElementById('emailAlertPopup').style.display = 'flex';
+}
+function closeEmailAlertPopup() {
+    document.getElementById('emailAlertPopup').style.display = 'none';
+}
+function closeThankYouPopup() {
+    document.getElementById('thankYouPopup').style.display = 'none';
+}
+</script>
+
+{{ end }}

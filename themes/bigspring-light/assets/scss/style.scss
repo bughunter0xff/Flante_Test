@@ -1,0 +1,48 @@
+// Color Variables
+{{ with site.Params.variables }}
+$primary-color: #ffaa58;
+$text-color: #455819;
+$text-color-dark: #455819;
+$body-color: {{.body_color | default "#fff"}};
+$border-color: {{.border_color | default "#ECECEC"}};
+$black: {{.black | default "#000"}};
+$white: {{.white | default "#fff"}};
+$light: {{.light | default "#EDF6F5"}};
+
+// Font Variables
+$primary-font: '{{ replaceRE ":[ital,]*wght@[0-9,;]+" "" .primary_font | default "Lato"}}', {{.primary_font_type | default "sans-serif"}};
+$icon-font: '{{.icon_font | default "Font Awesome 5 Free"}}';
+{{ end }}
+
+@import 'mixins';
+
+@import 'typography';
+
+@import 'buttons';
+
+@import 'common';
+
+@import 'templates/navigation.scss';
+
+@import 'templates/main.scss';
+
+@import 'menuround';
+
+@media only screen and (max-width: 768px) {
+    /* Adjust navbar items for mobile devices */
+    .navbar-nav .nav-item {
+        margin-right: 10px; /* Reduce margin */
+    }
+
+    .navbar-nav .nav-item .nav-link {
+        padding: 8px 15px; /* Reduce padding */
+    }
+
+    /* Adjustments for slider and carousel */
+    .slider, .carousel {
+        /* Add specific styles to fix overlapping issues, like reducing size, changing layout, etc. */
+    }
+
+    /* Other mobile-specific style adjustments */
+    /* Example: Reduce font sizes, adjust layout, etc. */
+}
