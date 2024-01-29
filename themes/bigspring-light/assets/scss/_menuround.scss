@@ -29,11 +29,11 @@
 @media only screen and (max-width: 768px) {
     /* Adjust navbar items for mobile devices */
     .navbar-nav .nav-item {
-        margin-right: 10px; /* Reduce margin */
+        margin-right: 1em; /* Reduce margin */
     }
 
     .navbar-nav .nav-item .nav-link {
-        padding: 8px 15px; /* Reduce padding */
+        padding: 1em 5em; /* Reduce padding */
     }
 
     /* Adjustments for slider and carousel */
